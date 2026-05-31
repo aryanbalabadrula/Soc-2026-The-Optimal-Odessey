@@ -1,0 +1,46 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int n,m,count;
+
+vector<vector<int>> adj;
+vector<bool> vis;
+
+vector<int> newroad;
+void dfs(int s){
+    if(vis[s])return;
+    vis[s] = true;
+
+    for(auto c : adj[s]){
+        dfs(c);
+    }
+}
+
+int main(){
+    cin >> n >> m;
+
+    adj.resize(n + 1);
+    vis.assign(n + 1, false);
+
+    for(int i=0;i<m;i++){
+        int a,b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    for(int i=1;i<=n;i++){
+        if(!vis[i]){
+            count++;
+            newroad.push_back(i);
+            dfs(i);
+        }
+    }
+
+    cout << newroad.size() - 1 << endl;
+    for(int i = 0; i < newroad.size() - 1; i++) {
+        cout << newroad[i] << " " << newroad[i + 1] << endl;
+    }
+
+}
