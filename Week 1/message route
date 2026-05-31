@@ -1,0 +1,71 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+int n,m;
+
+vector<vector<int>> adj;
+vector<bool> vis;
+queue<int> q;
+vector<int> dist;
+vector<int> parent;
+
+void bfs(int x){
+    vis[x] = true;
+    dist[x] = 0;
+    q.push(x);
+
+    while(!q.empty()){
+        int s = q.front();
+        q.pop();
+
+        for( auto u : adj[s]){
+            if(vis[u])continue;
+            vis[u] = true;
+            dist[u] = dist[s] + 1;
+            parent[u] = s;
+            q.push(u);
+        }
+    }
+}
+int main(){
+    cin >> n >> m;
+
+    adj.resize(n + 1);
+    vis.assign(n + 1, false);
+    dist.assign(n + 1, -1);
+    parent.assign(n + 1, -1);
+
+    for(int i=0;i<m;i++){
+        int a,b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    bfs(1);
+    
+    if(dist[n] == -1){cout << "IMPOSSIBLE";return 0;}
+    
+    vector<int> path;
+
+    int cur = n;
+
+    while(cur != -1){
+
+        path.push_back(cur);
+
+        cur = parent[cur];
+    }
+
+    reverse(path.begin(), path.end());
+
+    cout << path.size() << endl;
+
+    for(auto x : path){
+        cout << x << " ";
+    }
+
+}
