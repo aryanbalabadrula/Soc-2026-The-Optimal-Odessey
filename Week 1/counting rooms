@@ -1,0 +1,51 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+int n,m;
+vector<string> floor;
+vector<vector<bool>> vis;
+
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+
+void dfs(int x, int y){
+    vis[x][y] = true;
+
+    for(int i=0;i<4;i++){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+
+        if(nx < 0 || nx >= n || ny < 0 || ny >= m ){
+            continue;
+        }
+
+        if(floor[nx][ny] == '#')continue;
+
+        if(vis[nx][ny])continue;
+
+        dfs(nx,ny);
+    }
+}
+
+int main(){
+    cin >> n >> m;
+    floor.resize(n);
+    vis.assign(n, vector<bool>(m, false));
+    
+    for(int i=0;i<n;i++){
+        cin >> floor[i];
+    }
+
+    int rooms = 0;
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            if(floor[i][j] != '#' && !vis[i][j]){
+                rooms++;
+                dfs(i,j);
+            }
+        }
+    }
+
+    cout << rooms;
+}
