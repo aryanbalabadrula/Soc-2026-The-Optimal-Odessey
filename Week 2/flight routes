@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using pll = pair<ll,int>;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    vector<vector<pair<int,int>>> adj(n + 1);
+
+    for (int i = 0; i < m; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        adj[a].push_back({b, c});
+    }
+
+    priority_queue<
+        pll,
+        vector<pll>,
+        greater<pll>
+    > pq;
+
+    vector<int> cnt(n + 1, 0);
+    vector<ll> ans;
+
+    pq.push({0, 1});
+
+    while (!pq.empty()) {
+        auto [d, u] = pq.top();
+        pq.pop();
+
+        if (cnt[u] >= k)
+            continue;
+
+        cnt[u]++;
+
+        if (u == n)
+            ans.push_back(d);
+
+        for (auto [v, w] : adj[u]) {
+            if (cnt[v] < k)
+                pq.push({d + w, v});
+        }
+    }
+
+    for (ll x : ans)
+        cout << x << " ";
+
+    cout << "\n";
+
+    return 0;
+}

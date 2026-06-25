@@ -1,0 +1,28 @@
+{
+    "meta": {
+        "id": "assignment_01"
+    },
+    "results": [
+        {
+            "astar_euclidean": {
+                "nodes_explored": 5,
+                "path_found": false,
+                "path_length": -1,
+                "time_ms": 0.0072
+            },
+            "astar_manhattan": {
+                "nodes_explored": 5,
+                "path_found": false,
+                "path_length": -1,
+                "time_ms": 0.0033
+            },
+            "dijkstra": {
+                "nodes_explored": 5,
+                "path_found": false,
+                "path_length": -1,
+                "time_ms": 0.0136
+            },
+            "id": 1
+        }
+    ]
+}

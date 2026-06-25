@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<string> grid(n);
+
+    pair<int,int> start, endd;
+
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == 'A')
+                start = {i, j};
+
+            if (grid[i][j] == 'B')
+                endd = {i, j};
+        }
+    }
+
+    queue<pair<int,int>> q;
+
+    vector<vector<bool>> vis(n, vector<bool>(m, false));
+
+    vector<vector<pair<int,int>>> parent(
+        n, vector<pair<int,int>>(m, {-1, -1})
+    );
+
+    vector<vector<char>> moveTaken(
+        n, vector<char>(m)
+    );
+
+    q.push(start);
+    vis[start.first][start.second] = true;
+
+    int dx[4] = {-1, 1, 0, 0};
+    int dy[4] = {0, 0, -1, 1};
+
+    char dir[4] = {'U', 'D', 'L', 'R'};
+
+    while (!q.empty()) {
+
+        auto cur = q.front();
+        q.pop();
+
+        int x = cur.first;
+        int y = cur.second;
+
+        for (int i = 0; i < 4; i++) {
+
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if (nx < 0 || ny < 0 || nx >= n || ny >= m)
+                continue;
+
+            if (grid[nx][ny] == '#' || vis[nx][ny])
+                continue;
+
+            vis[nx][ny] = true;
+
+            parent[nx][ny] = {x, y};
+
+            moveTaken[nx][ny] = dir[i];
+
+            q.push({nx, ny});
+        }
+    }
+
+    if (!vis[endd.first][endd.second]) {
+        cout << "NO\n";
+        return 0;
+    }
+
+    string path;
+
+    pair<int,int> cur = endd;
+
+    while (cur != start) {
+
+        path.push_back(
+            moveTaken[cur.first][cur.second]
+        );
+
+        cur = parent[cur.first][cur.second];
+    }
+
+    reverse(path.begin(), path.end());
+
+    cout << "YES\n";
+    cout << path.size() << "\n";
+    cout << path << "\n";
+}

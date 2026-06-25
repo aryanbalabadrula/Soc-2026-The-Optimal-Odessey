@@ -1,0 +1,24 @@
+{
+    "meta":
+    {
+        "id":"assignment_01"
+    },
+
+    "events":
+    [
+        {
+            "id":1,
+            "type":"find_path",
+            "start":
+            {
+                "y":0,
+                "x":0
+            },
+            "goal":
+            {
+                "y":4,
+                "x":4
+            }
+        }
+    ]
+}

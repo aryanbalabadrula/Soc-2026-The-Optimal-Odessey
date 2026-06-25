@@ -1,0 +1,135 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+
+int n, m;
+vector<string> grid;
+
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+char dir[4] = {'U', 'D', 'L', 'R'};
+
+int main() {
+    cin >> n >> m;
+
+    grid.resize(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> grid[i];
+
+    vector<vector<int>> monster(n, vector<int>(m, INF));
+    vector<vector<int>> dist(n, vector<int>(m, INF));
+
+    vector<vector<pair<int,int>>> parent(
+        n, vector<pair<int,int>>(m, {-1,-1})
+    );
+
+    vector<vector<char>> moveTaken(
+        n, vector<char>(m)
+    );
+
+    queue<pair<int,int>> q;
+
+    pair<int,int> start;
+
+    // put all monsters into queue
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == 'M') {
+                q.push({i, j});
+                monster[i][j] = 0;
+            }
+            if (grid[i][j] == 'A') {
+                start = {i, j};
+            }
+        }
+    }
+
+    // multi-source BFS
+    while (!q.empty()) {
+        auto [x, y] = q.front();
+        q.pop();
+
+        for (int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                continue;
+
+            if (grid[nx][ny] == '#')
+                continue;
+
+            if (monster[nx][ny] != INF)
+                continue;
+
+            monster[nx][ny] = monster[x][y] + 1;
+            q.push({nx, ny});
+        }
+    }
+
+    queue<pair<int,int>> q2;
+
+    q2.push(start);
+    dist[start.first][start.second] = 0;
+
+    pair<int,int> finish = {-1,-1};
+
+    while (!q2.empty()) {
+        auto [x, y] = q2.front();
+        q2.pop();
+
+        if (x == 0 || x == n-1 || y == 0 || y == m-1) {
+            finish = {x, y};
+            break;
+        }
+
+        for (int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m)
+                continue;
+
+            if (grid[nx][ny] == '#')
+                continue;
+
+            if (dist[nx][ny] != INF)
+                continue;
+
+            int nd = dist[x][y] + 1;
+
+            if (nd >= monster[nx][ny])
+                continue;
+
+            dist[nx][ny] = nd;
+            parent[nx][ny] = {x, y};
+            moveTaken[nx][ny] = dir[k];
+
+            q2.push({nx, ny});
+        }
+    }
+
+    if (finish.first == -1) {
+        cout << "NO\n";
+        return 0;
+    }
+
+    string path;
+
+    auto cur = finish;
+
+    while (cur != start) {
+        path.push_back(
+            moveTaken[cur.first][cur.second]
+        );
+        cur = parent[cur.first][cur.second];
+    }
+
+    reverse(path.begin(), path.end());
+
+    cout << "YES\n";
+    cout << path.size() << "\n";
+    cout << path << "\n";
+}

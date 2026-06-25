@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int n, m;
+vector<vector<int>> adj;
+vector<int> vis, parent;
+vector<int> cycle;
+
+bool dfs(int u, int p) {
+    vis[u] = 1;
+    parent[u] = p;
+
+    for (int v : adj[u]) {
+        if (v == p) continue;
+
+        if (!vis[v]) {
+            if (dfs(v, u))
+                return true;
+        }
+        else {
+            cycle.push_back(v);
+
+            int cur = u;
+            while (cur != v) {
+                cycle.push_back(cur);
+                cur = parent[cur];
+            }
+            cycle.push_back(v);
+
+            reverse(cycle.begin(), cycle.end());
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+
+    adj.resize(n + 1);
+    vis.assign(n + 1, 0);
+    parent.assign(n + 1, -1);
+
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (!vis[i]) {
+            if (dfs(i, -1))
+                break;
+        }
+    }
+
+    if (cycle.empty()) {
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
+
+    cout << cycle.size() << "\n";
+
+    for (int x : cycle)
+        cout << x << " ";
+
+    cout << "\n";
+}
